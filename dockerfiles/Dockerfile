@@ -4,8 +4,7 @@ FROM anapsix/alpine-java:8
 
 LABEL maintainer="sunxboy@gmail.com"
 
-# RUN apk add --no-cache curl bash mysql-client tzdata && rm -rf /var/cache/apk/*
-RUN apk add --update curl bash tzdata && rm -rf /var/cache/apk/*
+RUN apk add --update bash tzdata && rm -rf /var/cache/apk/*
 ENV TZ Asia/Shanghai
 
 RUN mkdir -p /tmp/
