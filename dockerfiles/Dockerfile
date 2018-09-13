@@ -4,7 +4,7 @@ FROM anapsix/alpine-java:8
 
 LABEL maintainer="sunxboy@gmail.com"
 
-RUN apk add --update bash tzdata && rm -rf /var/cache/apk/*
+RUN apk add --no-cache bash tzdata
 ENV TZ Asia/Shanghai
 
 RUN mkdir -p /tmp/
