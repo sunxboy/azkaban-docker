@@ -1,0 +1,45 @@
+mysql:
+    image: connector/azkaban-mysql:v1
+    restart: always
+    command: mysqld --character-set-server=utf8 --collation-server=utf8_unicode_ci --init-connect='SET NAMES UTF8;' --innodb-flush-log-at-trx-commit=0 --lower_case_table_names=1
+    ports:
+        - "3306:3306"
+    environment:
+        - MYSQL_USER=${MYSQL_USER}
+        - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+        - MYSQL_DATABASE=${MYSQL_DATABASE}
+        - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+
+executor:
+    image: connector/azkaban-exec:v1
+    restart: always
+    ports:
+        - "12321:12321"
+    links:
+        - mysql
+    environment:
+        - MYSQL_HOST=mysql
+        - MYSQL_PORT=3306
+        - MYSQL_USER=${MYSQL_USER}
+        - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+        - AZKABAN_DB=${MYSQL_DATABASE}
+    volumes:
+        - "d:/data/lib:/execlib"
+        - "d:/data/datax:/datax"
+
+webserver:
+    image: connector/azkaban-web:v1
+    restart: always
+    ports:
+        - "8081:8081"
+    links:
+        - executor
+        - mysql
+    environment:
+        - MYSQL_HOST=mysql
+        - MYSQL_PORT=3306
+        - MYSQL_USER=${MYSQL_USER}
+        - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+        - AZKABAN_USER=${AZKABAN_USER}
+        - AZKABAN_PASSWORD=${AZKABAN_PASSWORD}
+        - AZKABAN_DB=${MYSQL_DATABASE}
