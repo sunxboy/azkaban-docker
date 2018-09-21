@@ -1,4 +1,7 @@
-mysql:
+version: '2'
+
+services:
+  mysql:
     image: connector/azkaban-mysql:v1
     restart: always
     command: mysqld --character-set-server=utf8 --collation-server=utf8_unicode_ci --init-connect='SET NAMES UTF8;' --innodb-flush-log-at-trx-commit=0 --lower_case_table_names=1
@@ -9,13 +12,17 @@ mysql:
         - MYSQL_PASSWORD=${MYSQL_PASSWORD}
         - MYSQL_DATABASE=${MYSQL_DATABASE}
         - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+    networks:
+        - azkaban_net
 
-executor:
+  executor:
     image: connector/azkaban-exec:v1
     restart: always
     ports:
         - "12321:12321"
-    links:
+    networks:
+        - azkaban_net
+    depends_on:
         - mysql
     environment:
         - MYSQL_HOST=mysql
@@ -24,15 +31,17 @@ executor:
         - MYSQL_PASSWORD=${MYSQL_PASSWORD}
         - AZKABAN_DB=${MYSQL_DATABASE}
     volumes:
-        - "d:/data/lib:/execlib"
-        - "d:/data/datax:/datax"
+        - "/execlib:/execlib"
+        - "/datax:/datax"
 
-webserver:
+  webserver:
     image: connector/azkaban-web:v1
     restart: always
     ports:
         - "8081:8081"
-    links:
+    networks:
+        - azkaban_net
+    depends_on:
         - executor
         - mysql
     environment:
@@ -43,3 +52,6 @@ webserver:
         - AZKABAN_USER=${AZKABAN_USER}
         - AZKABAN_PASSWORD=${AZKABAN_PASSWORD}
         - AZKABAN_DB=${MYSQL_DATABASE}
+
+networks:
+  azkaban_net:

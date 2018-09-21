@@ -1,5 +1,5 @@
 mysql:
-    image: docker.sunxboy.com:5000/skycomm/connector/azkaban-mysql:v1
+    image: connector/azkaban-mysql:v1
     restart: always
     command: mysqld --character-set-server=utf8 --collation-server=utf8_unicode_ci --init-connect='SET NAMES UTF8;' --innodb-flush-log-at-trx-commit=0 --lower_case_table_names=1
     ports:
@@ -11,12 +11,13 @@ mysql:
         - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
 
 executor:
-    image: docker.sunxboy.com:5000/skycomm/connector/azkaban-exec:v1
+    image: connector/azkaban-exec:v1
     restart: always
     ports:
         - "12321:12321"
     links:
         - mysql
+        - manager
     environment:
         - MYSQL_HOST=mysql
         - MYSQL_PORT=3306
@@ -28,7 +29,7 @@ executor:
         - "/datax:/datax"
 
 webserver:
-    image: docker.sunxboy.com:5000/skycomm/connector/azkaban-web:v1
+    image: connector/azkaban-web:v1
     restart: always
     ports:
         - "8081:8081"
@@ -43,3 +44,35 @@ webserver:
         - AZKABAN_USER=${AZKABAN_USER}
         - AZKABAN_PASSWORD=${AZKABAN_PASSWORD}
         - AZKABAN_DB=${MYSQL_DATABASE}
+
+manager:
+    image: connector/manager:v1
+    restart: always
+    ports:
+        - "7001:7001"
+    links:
+        - mysql
+    environment:
+    environment:
+        - APP_SID=DEV
+        - MYSQL_HOST=mysql
+        - MYSQL_PORT=3306
+        - MYSQL_USER=${MYSQL_USER}
+        - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+        - MYSQL_DB=${MYSQL_DATABASE}
+        - AZKABAN_HOST=webserver
+        - AZKABAN_PORT=8081
+        - AZKABAN_USER=${AZKABAN_USER}
+        - AZKABAN_PASSWORD=${AZKABAN_PASSWORD}
+        - AZKABAN_DB=${MYSQL_DATABASE}
+        - MANAGER_AZKABAN_HOST=manager
+        - CONNECTOR_HOST=manager
+        - CONNECTOR_PORT=7001
+        - CONNECTOR_TIMEOUT=120
+        - SECURITY_ENABLE=false
+        - SECURITY_USERNAME=admin
+        - SECURITY_PASSWORD=123
+        - SETUP_MODE=INIT
+    volumes:
+        - "/d/data:/file2csv/data"
+        - "/d/data/datax:/datax"
