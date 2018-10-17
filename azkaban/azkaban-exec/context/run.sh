@@ -1,7 +1,7 @@
 #!/bin/sh
 # Wait for database to get available
 
-DB_LOOPS="20"
+DB_LOOPS="120"
 MYSQL_HOST=${MYSQL_HOST:-"mysql"}
 MYSQL_PORT=${MYSQL_PORT:-"3306"}
 MYSQL_USER=${MYSQL_USER:-"azkaban"}

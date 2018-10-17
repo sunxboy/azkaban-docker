@@ -2,7 +2,7 @@ version: '2'
 
 services:
   mysql:
-    image: connector/azkaban-mysql:v1
+    image: ${MAVEN_DOCKER}/connector/azkaban-mysql:v1.1.0
     restart: always
     command: mysqld --character-set-server=utf8 --collation-server=utf8_unicode_ci --init-connect='SET NAMES UTF8;' --innodb-flush-log-at-trx-commit=0 --lower_case_table_names=1
     ports:
@@ -14,9 +14,11 @@ services:
         - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
     networks:
         - azkaban_net
+    volumes:
+        - my-datavolume:/var/lib/mysql
 
   executor:
-    image: connector/azkaban-exec:v1
+    image: ${MAVEN_DOCKER}/connector/azkaban-exec:v1.1.0
     restart: always
     ports:
         - "12321:12321"
@@ -33,9 +35,10 @@ services:
     volumes:
         - "/execlib:/execlib"
         - "/datax:/datax"
+        - "/backup:/backup"
 
   webserver:
-    image: connector/azkaban-web:v1
+    image: ${MAVEN_DOCKER}/connector/azkaban-web:v1.1.0
     restart: always
     ports:
         - "8081:8081"
@@ -55,3 +58,5 @@ services:
 
 networks:
   azkaban_net:
+volumes:
+  my-datavolume:
