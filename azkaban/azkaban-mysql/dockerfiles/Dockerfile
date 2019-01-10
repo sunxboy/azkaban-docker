@@ -1,2 +1,3 @@
-FROM connector/mysql:v1
+FROM mysql:5.7.22
 COPY *.sql /docker-entrypoint-initdb.d/
+RUN chmod a+x /docker-entrypoint-initdb.d/*.sql

@@ -1,6 +1,6 @@
 # VERSION 1.0
 
-FROM connector/base:v1
+FROM connector/base:v1.2.0
 
 LABEL maintainer="sunxboy@gmail.com"
 

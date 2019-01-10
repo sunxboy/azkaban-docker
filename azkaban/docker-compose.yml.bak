@@ -10,7 +10,7 @@ services:
     environment:
         - MYSQL_USER=${MYSQL_USER}
         - MYSQL_PASSWORD=${MYSQL_PASSWORD}
-        - MYSQL_DATABASE=${AZKABAN_DB}
+        - MYSQL_DATABASE=${MYSQL_DB}
         - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
     networks:
         - azkaban_net
@@ -33,7 +33,7 @@ services:
         - MYSQL_PASSWORD=${MYSQL_PASSWORD}
         - AZKABAN_DB=${MYSQL_DATABASE}
     volumes:
-        - "/opt/cpip-connector/azkaban-executor/lib/:/opt/cpip-connector/azkaban-executor/lib/"
+        - "/opt/cpip-connector/cpip-connector-executor/lib:/opt/cpip-connector/cpip-connector-executor/lib"
         - "/opt/cpip-connector/datax:/opt/cpip-connector/datax"
         - "/opt/cpip-connector/azkaban-executor/history:/opt/cpip-connector/azkaban-executor/history"
         - "/opt/cpip-connector/azkaban-executor/logs:/opt/cpip-connector/azkaban-executor/logs"

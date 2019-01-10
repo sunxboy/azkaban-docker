@@ -4,7 +4,7 @@
 # PLEASE DO NOT EDIT IT DIRECTLY.
 #
 
-FROM connector/base:v1
+FROM connector/base:v2
 
 # ensure local python is preferred over distribution python
 ENV PATH /usr/local/bin:$PATH
